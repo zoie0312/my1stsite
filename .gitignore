@@ -1,2 +1,3 @@
 *.pyc
 *.bak
+my1stsite/settings/local.py
