@@ -1,0 +1,12 @@
+{% extends "_layouts/base.html" %}
+{% load url from future %}
+{% block page_title %}The Infoholic | {% endblock %}
+
+{% block page_content %}
+<div class="row-fluid">
+	<h1>Welcome infoholic</h1>
+	<a href="{% url 'infoholic:login' %}" class="btn">Log in</a>
+	<a href="{% url 'infoholic:signup' %}" class="btn">Sign up</a>
+	<a href="{% url 'infoholic:user_default' %}" class="btn">Try it</a>
+</div>
+{% endblock %} 

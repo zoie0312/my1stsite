@@ -132,11 +132,11 @@ DJANGO_APPS = (
     # 'django.contrib.admindocs',
 )
 THIRD_PARTY_APPS = (
-
+    'south',
 )
 
 LOCAL_APPS = (
-
+    'infoholic',
 )
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
