@@ -143,7 +143,7 @@ def category_detail(request, slug):
         temp_post_list.remove(post)
     """
     
-    article_list = user.articles.filter(category=cat_selected)[:15]
+    article_list = user.articles.filter(category=cat_selected)
     context = {
         'username'      : username,
         'category_list' : category_list,
@@ -182,12 +182,12 @@ def feed_detail(request, slug1, slug2):
                 new_article.source = feed_selected
                 new_article.category = cat_selected
                 new_article.reader = user
-                if num_save_article < 10:
+                if num_save_article < 100:
                     new_article.save()
                 num_save_article += 1
     
     article_list = user.articles.filter(category=cat_selected,
-                                    source=feed_selected)[:10]
+                                    source=feed_selected)
     """
     for i in range(10):
         post_list.append(Post())
