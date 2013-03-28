@@ -122,7 +122,7 @@ def category_detail(request, slug):
                 new_article.source = feed
                 new_article.category = cat_selected
                 new_article.reader = user
-                if num_save_article < 10:
+                if num_save_article < 100:
                     new_article.save()
                 num_save_article += 1
             
