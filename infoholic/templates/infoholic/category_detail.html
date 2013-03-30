@@ -3,21 +3,33 @@
 {% block page_title %} The Infoholic | {% endblock %}
 
 {% block page_content %}
-
+<style type="text/css">
+	.sidebar-list {
+		height: 30px;
+	}
+	.navbar-inner .brand {
+		padding: 30px 0px 10px;
+		color:   rgb(255, 185, 15);
+	}
+	.sidebar-list > a {
+		height: 30px;
+	}
+</style>
 	<div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+          <!--<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
-          </a>
-          <a class="brand" href="#"><img src="{{ STATIC_URL }}img/w3r.png" width="111" height="30" alt="w3resource logo" /></a> 
-          
+          </a>-->
+          <!--<a class="brand" href="#"><img src="{{ STATIC_URL }}img/w3r.png" width="111" height="30" alt="w3resource logo" /></a> 
+          	-->
+          <a class="brand">The Infoholic</a>-->
           <div class="nav-collapse">
             <ul class="nav">
               
-              <li class="active"><a href="#">Home</a></li>
+              <li class="active"><a href="{% url 'infoholic:user_default' %}">Home</a></li>
               <li><a href="#about">About</a></li>
               <li><a href="#contact">Contact</a></li>
             </ul>
@@ -26,8 +38,7 @@
 		    	<a class="btn btn-primary"><i class="icon-user icon-white"></i>{{ username }}</a>
 		    	<a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#"><span class="caret"></span></a>
 		    	<ul class="dropdown-menu">
-		    		<li><a href="#"><i class="icon-pencil"></i> Edit</a></li>
-		    		<li><a href="#"><i class="icon-trash"></i> Delete</a></li>
+		    		<li><a href="{% url 'infoholic:user_profile' %}" ><i class="icon-pencil"></i> Edit</a></li>
 		    		<li><a href="{% url 'infoholic:logout' %}"><i class="icon-home"></i> Log out</a></li>
 		      	</ul>
 		    </div>
@@ -46,19 +57,24 @@
 	        <ul class="nav nav-list">
 	        
 	        	{% for category in category_list %}
-	        		<li class="nav-header"><a href="{% url 'infoholic:category_detail' category.name %}"><h5>{{ category.name }}</h5></a></li>
-	        		 {% if category == cat_selected %}
-	        		 	{% for feed in feed_list %}
-	        		 		<li><a href="{% url 'infoholic:feed_detail' category.slug_name feed.slug %}">{{ feed.title }}</a></li>
+	        		{% if category == cat_selected %}
+	        			<li class="sidebar-list active"><a href="{% url 'infoholic:category_detail' category.name %}"><h4>{{ category.name }}</h4></a></li>
+	        			{% for feed in feed_list %}
+	        		 		<div ><a href="{% url 'infoholic:feed_detail' category.slug_name feed.slug %}"><h6>{{ feed.title }}</h6></a></div>
 	        		 	{% endfor %}
+	        		{% else %}
+	        			<li class="sidebar-list"><a href="{% url 'infoholic:category_detail' category.name %}"><h4>{{ category.name }}</h4></a></li>
+	        		 	
 	        		 {% endif %}
 	        	{% endfor %}      
-	        	                         
+	        	<li class="nav-header"><a href="{% url 'infoholic:edit_source' %}"><h6>More..</h6></a></li>                         
 	        </ul>
 	      </div><!--/.well -->
 	    </div><!--/sidebarContainer-->
 	  </div><!--/span-->
 	  
+	  
+    
 	  <div class="span10">
 	    <div class="container-fluid">
 	      <h2>Knowledge is power.</h1>

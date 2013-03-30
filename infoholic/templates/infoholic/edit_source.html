@@ -1,0 +1,72 @@
+{% extends "_layouts/base.html" %}
+
+{% block page_title %} The Infoholic | {% endblock %}
+
+{% block page_content %}
+<style type="text/css">
+	.center-container {
+		width: 550px;
+	}
+</style>
+<div class="row-fluid">
+	<div class="span3">
+	</div>
+	<div class="span9">
+		<div class="center-container">
+	    	<form class="form-horizontal" action="{% url 'infoholic:edit_source' %}" method="POST">
+	    		{% csrf_token %}
+	    			<div class="content-header">
+	    				<legend class>Category</legend>
+	    			</div>
+	    			<div class="control-group">
+	    				<li>Add a category:</li>
+	    			<div>		
+	    			<div class="control-group">
+						<label class="control-label" for="categoryTitle">Title</label>
+						<div class="controls">
+							<input type="text" id="categoryTitle" name="new_cat_name" placeholder">
+							<p>ex: News</p>
+						</div>
+					</div>
+					<div>
+						<legend class>Feed</legend>
+					</div>
+					<div class="control-group">
+						<li>Add a feed:</li>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="feedTitle">Title</label>
+						<div class="controls">
+							<input type="text" id="feedTitle" name="new_feed_title" placeholder>
+							<p>usually the name of a website or a blog; eg, CNN</p>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="feedCategory">Category</label>
+						<div class="controls">
+							<select id="feedCategory" name="new_feed_cat" >
+								{% for category in user.categories.all %}
+									<option value="{{ category }}">{{ category.name }}</option>
+								{% endfor %}
+							</select>
+							<p>choose what category you'd like this feed belongs to</p>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="feedLink">Link</label>
+						<div class="controls">
+							<input type="text" id="feedLink" name="new_feed_link" placeholder>
+							<p>usually the link of a RSS feed; eg, http://feeds.bbci.co.uk/news/rss.xml</p>
+						</div>
+					</div>
+					<div class="control-group">
+	    		    	<div class="controls">		
+	    				<button class="btn btn-primary" type="submit" >Save</button>
+	    				<a class="btn " href="javascript:window:history.back()">Close</a>
+	    				</div>
+	    			</div>
+	    	</form>
+	    </div><!-- /center-container -->
+	</div><!-- /span8-->
+</div>      
+{% endblock %}

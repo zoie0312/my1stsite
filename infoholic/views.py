@@ -9,6 +9,7 @@ from django.shortcuts import render
 import feedparser
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
+from django.contrib.auth.hashers import check_password
 
 
 class HomepageView(TemplateView):
@@ -16,34 +17,82 @@ class HomepageView(TemplateView):
 
 def register(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            new_user = form.save()
-            user_guest = User.objects.get(username='guest')
-            for category in user_guest.categories.all():
-                category.owners.add(new_user)
-                for feed in user_guest.feeds.filter(category=category):
-                    feed.owners.add(new_user)
-            new_user.save()
-            username = request.POST.get('username', '')
-            password = request.POST['password1']
-            user = authenticate(username=username,
-                                password=password)
-            if user is not None:
-                if user.is_active:
-                    login(request, user)
-                    return HttpResponseRedirect(reverse('infoholic:user_default'))
-                else:
-                    return HttpResponseRedirect(reverse('home'))
-            else:
-                return HttpResponseRedirect(reverse('infoholic:signup'))
-                    
+        new_user = User()
+        new_user.username = request.POST['username']
+        new_user.email = request.POST['email']
+        new_user.set_password(request.POST['password'])
+        new_user.save()
+        user_guest = User.objects.get(username='guest')
+        for category in user_guest.categories.all():
+            category.owners.add(new_user)
+            for feed in user_guest.feeds.filter(category=category):
+                feed.owners.add(new_user)
             
+        username = request.POST.get('username', '')
+        password = request.POST['password']
+        user = authenticate(username=new_user.username,
+                            password=password)
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+                return HttpResponseRedirect(reverse('infoholic:user_default'))
+            else:
+                return HttpResponseRedirect(reverse('home'))
+        else:
+            return HttpResponseRedirect(reverse('infoholic:signup'))
+      
     else:
-        form = UserCreationForm()
-    return render(request, "infoholic/register.html", {
-        'form': form,
-    })
+        return HttpResponseRedirect(reverse('infoholic:home'))
+
+def user_profile(request):
+    template_name = "infoholic/user_profile.html"
+    if request.method == 'POST':
+        if request.POST['inputEmail'] is not None:
+            request.user.email = request.POST['inputEmail']
+            request.user.save()
+        if check_password(request.POST['currentPassword'], request.user.password):
+            if (request.POST['newPassword'] is not None) and \
+               (request.POST['confirmPassword'] is not None) and \
+               (request.POST['newPassword'] == request.POST['confirmPassword']):
+                request.user.set_password(request.POST['newPassword'])
+                request.user.save()
+                                
+        return HttpResponseRedirect(reverse('infoholic:user_default'))
+    else:
+        return render(request, template_name)
+            
+def edit_source(request):
+    template_name = "infoholic/edit_source.html"
+    if request.method == 'POST':
+        if request.POST['new_cat_name'] != '':
+            new_cat_added = False
+            for category in Category.objects.all():
+                if category.name == request.POST['new_cat_name']:
+                    if category not in request.user.categories.all():
+                        category.owners.add(request.user)
+                        new_cat_added = True
+            if not new_cat_added:
+                new_category = Category(name=request.POST['new_cat_name'])
+                new_category.save()
+                new_category.owners.add(request.user)
+                
+        if request.POST['new_feed_title'] != '':
+            new_feed_added = False
+            for feed in Feed.objects.all():
+                if feed.link == request.POST['new_feed_link']:
+                    if feed not in request.user.feeds.all():
+                        feed.owners.add(request.user)
+                        new_feed_added = True
+            if not new_feed_added:
+                new_feed = Feed(title=request.POST['new_feed_title'],
+                                category=request.POST['new_feed_cat'],
+                                link=request.POST['new_feed_link'])
+                new_feed.save()
+                new_feed.owners.add(request.user)
+            
+        return HttpResponseRedirect(reverse('infoholic:user_default'))
+    else:
+        return render(request, template_name)
 
 def user_default(request):
     template_name = "infoholic/user_default.html"

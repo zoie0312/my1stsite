@@ -1,0 +1,68 @@
+{% extends "_layouts/base.html" %}
+
+{% block page_title %} The Infoholic | {% endblock %}
+
+{% block page_content %}
+<style type="text/css">
+	.center-container {
+		width: 500px;
+	}
+</style>
+<div class="row-fluid">
+	<div class="span4">
+	</div>
+	<div class="span8">
+		<div class="center-container">
+	    	<div class="content-header">
+	    		<h2>User Profile</h2>
+	    	</div>
+	    	<hr>
+	    	<form class="form-horizontal" action="{% url 'infoholic:user_profile' %}" method="POST">
+	    		{% csrf_token %}
+	    		
+	    			<div class="control-group">
+						<label class="control-label" for="inputUser">Username</label>
+						<div class="controls">
+							<input type="text" id="inputUser" name="inputUser" placeholder="{{ user.username }}" disabled="disabled">
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="inputEmail">Email</label>
+						<div class="controls">
+							<input type="text" id="inputEmail" name="inputEmail" placeholder="{{ user.email }}">
+						</div>
+					</div>
+					<div class="control-group"></div>
+					<div>
+						<h4>Change Password</h4>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="password_current">Current Password</label>
+						<div class="controls">
+							<input type="password" id="password_current" name="currentPassword" placeholder>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="password_new">New Password</label>
+						<div class="controls">
+							<input type="password" id="password_new" name="newPassword" placeholder>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="password_confirm">Confirm Password</label>
+						<div class="controls">
+							<input type="password" id="password_confirm" name="confirmPassword" placeholder>
+						</div>
+					</div>
+					
+	    		    <div class="control-group">
+	    		    	<div class="controls">		
+	    				<button class="btn btn-primary" type="submit" >Save changes</button>
+	    				<a class="btn " href="javascript:window:history.back()">Close</a>
+	    				</div>
+	    			</div>
+	    	</form>
+	    </div><!-- /center-container -->
+	</div><!-- /span8-->
+</div>      
+{% endblock %}

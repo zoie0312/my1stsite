@@ -22,5 +22,7 @@ urlpatterns = patterns('',
         name='category_detail'),
     url(r'^category/(?P<slug1>[\w-]+)/(?P<slug2>[\w-]+)/$',
         'infoholic.views.feed_detail', name='feed_detail'),
+    url(r'^userprofile/$', 'infoholic.views.user_profile', name='user_profile'),
+    url(r'^editsource/$', 'infoholic.views.edit_source', name='edit_source'),
     #url(r'^(?P<slug>[\w-]+)/$', views.PostDetailView.as_view(), name='detail'),
 )

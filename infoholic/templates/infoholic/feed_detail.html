@@ -49,7 +49,11 @@
 	        		<li class="nav-header"><a href="{% url 'infoholic:category_detail' category.name %}"><h5>{{ category.name }}</h5></a></li>
 	        		 {% if category == cat_selected %}
 	        		 	{% for feed in feed_list %}
-	        		 		<li><a href="{% url 'infoholic:feed_detail' category.slug_name feed.slug %}">{{ feed.title }}</a></li>
+	        		 		{% if feed == feed_selected %}
+	        		 			<li class="active"><a href="{% url 'infoholic:feed_detail' category.slug_name feed.slug %}">{{ feed.title }}</a></li>
+	        		 		{% else %}
+	        		 			<li><a href="{% url 'infoholic:feed_detail' category.slug_name feed.slug %}">{{ feed.title }}</a></li>
+	        		 		{% endif %}
 	        		 	{% endfor %}
 	        		 {% endif %}
 	        	{% endfor %}      
