@@ -95,7 +95,7 @@ def edit_source(request):
         return render(request, template_name)
 
 def user_default(request):
-    template_name = "infoholic/user_default.html"
+    template_name = "infoholic/read_article.html"
     if request.user.is_authenticated():
         user = request.user        
     else:
@@ -133,15 +133,15 @@ def user_default(request):
     context = {
         'username'     : username,
         'category_list': category_list,
-        'default_cat'  : default_cat,
+        'cat_selected'  : default_cat,
         'feed_list'    : feed_list,
-        'default_feed' : default_feed,
+        'feed_selected' : default_feed,
         'article_list' : article_list
     }
     return render(request, template_name, context)
 
 def category_detail(request, slug):
-    template_name = "infoholic/category_detail.html"
+    template_name = "infoholic/read_article.html"
     if request.user.is_authenticated():
         user = request.user        
     else:
@@ -175,23 +175,7 @@ def category_detail(request, slug):
                     new_article.save()
                 num_save_article += 1
             
-    """    
-    post_list = temp_post_list[:]
-    post = temp_post_list[0]
-    if len(temp_post_list) > 10:
-        show_posts = 10
-    else:
-        show_posts = len(temp_post_list)
-    for j in range(show_posts):
-        post = post_list[j]
-        for temp_post in temp_post_list:
-            if post.created_at <= temp_post.created_at:
-                post = temp_post
-                
-        post_list[j] = post
-        temp_post_list.remove(post)
-    """
-    
+        
     article_list = user.articles.filter(category=cat_selected)
     context = {
         'username'      : username,
@@ -203,7 +187,7 @@ def category_detail(request, slug):
     return render(request, template_name, context)
 
 def feed_detail(request, slug1, slug2):
-    template_name = "infoholic/feed_detail.html"
+    template_name = "infoholic/read_article.html"
     if request.user.is_authenticated():
         user = request.user        
     else:
@@ -235,6 +219,13 @@ def feed_detail(request, slug1, slug2):
                     new_article.save()
                 num_save_article += 1
     
+    num_feed_articles = user.articles.filter(category=cat_selected,
+                                    source=feed_selected).count()
+    if num_feed_articles > parse_len:
+        for j in range(num_feed_articles-1, parse_len+9, -1):
+            user.articles.filter(category=cat_selected,
+                                 source=feed_selected)[j].delete()
+        
     article_list = user.articles.filter(category=cat_selected,
                                     source=feed_selected)
     """

@@ -4,8 +4,30 @@
 
 {% block page_content %}
 <style type="text/css">
-	
+	#content-background {
+		position: fixed;
+		top: -50%;
+		left: -50%;
+		width: 200%;
+		height: 200%;
+		z-index: -999999;
+	}
+	#content-background img {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		margin: auto;
+		min-width: 50%;
+		min-height: 50%;
+	}
 </style>
+<!--
+<div id="content-background" >
+	<img src="{{ STATIC_URL }}img/P1030889-2.jpg">
+</div>
+-->
 	<div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
@@ -20,17 +42,29 @@
           <div class="nav-collapse">
             <ul class="nav">
               
-              <li class="active"><a href="#">Home</a></li>
-              <li><a href="#about">About</a></li>
-              <li><a href="#contact">Contact</a></li>
+              <li><a href="{% url 'infoholic:user_default' %}">Home</a></li>
+              <li><a href="#aboutModal" data-toggle="modal">About</a></li>
+              <li><a href="mailto:greenmoonshisu@gmail.com">Contact</a></li>
+            </ul>
+            <ul class="nav">
+            	<form class="form-search">
+            		<div class="input-append">
+    	  				<input type="text" class="span2 search-query">
+    	  				<button type="submit" class="btn">Search</button>
+    	  			</div>
+    	  		</form>
             </ul>
             <!-- <p class="navbar-text pull-right">Hello, <a href="#">{{ username }}</a></p> -->
             <div class="btn-group pull-right">
 		    	<a class="btn btn-primary"><i class="icon-user icon-white"></i>{{ username }}</a>
 		    	<a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#"><span class="caret"></span></a>
 		    	<ul class="dropdown-menu">
-		    		<li><a href="{% url 'infoholic:user_profile' %}"><i class="icon-pencil"></i> Edit</a></li>
-		    		<li><a href="{% url 'infoholic:logout' %}"><i class="icon-home"></i> Log out</a></li>
+		    		{% if username == 'guest' %}
+		    			<li><a href="{% url 'infoholic:logout' %}"><i class="icon-home"></i> Bye bye</a></li>
+		    		{% else %}
+		    			<li><a href="{% url 'infoholic:user_profile' %}"><i class="icon-pencil"></i> Edit</a></li>
+		    			<li><a href="{% url 'infoholic:logout' %}"><i class="icon-home"></i> Log out</a></li>
+		    		{% endif %}
 		      	</ul>
 		    </div>
           </div><!--/.nav-collapse -->
@@ -56,29 +90,35 @@
 	        			{% endif %}
 	        			{% for feed in feed_list %}
 	        				{% if feed == feed_selected %}
-	        					<li class="sidebar-list-detail active"><a href="{% url 'infoholic:feed_detail' category.slug_name feed.slug %}"><h5>{{ feed.title }}</h5></a></li>
+	        					<li class="sidebar-list-detail active"><a href="{% url 'infoholic:feed_detail' category.slug_name feed.slug %}"><h6>{{ feed.title }}</h6></a></li>
 	        		 		{% else %}	
-	        		 			<li class="sidebar-list-detail"><a href="{% url 'infoholic:feed_detail' category.slug_name feed.slug %}"><h5>{{ feed.title }}</h5></a></li>
+	        		 			<li class="sidebar-list-detail"><a href="{% url 'infoholic:feed_detail' category.slug_name feed.slug %}"><h6>{{ feed.title }}</h6></a></li>
 	        		 		{% endif %}
 	        		 	{% endfor %}
 	        		{% else %}
 	        			<li class="sidebar-list"><a href="{% url 'infoholic:category_detail' category.name %}"><h4>{{ category.name }}</h4></a></li>
 	        		{% endif %}
 	        	{% endfor %}
-	        	<hr>      
-	        	<li class="sidebar-list"><a href="{% url 'infoholic:edit_source' %}"><h4><em>More...</em></h4></a></li>    
-	        	                         
+	        	<hr>
+	        	{% if username != 'guest' %}      
+	        		<li class="sidebar-list"><a href="{% url 'infoholic:edit_source' %}"><h4><em>More...</em></h4></a></li>    
+	        	{% endif %}                        
 	        </ul>
 	      </div><!--/.well -->
 	    </div><!--/sidebarContainer-->
 	  </div><!--/span-->
-	  
+	
 	  <div class="span9">
-	    <!--
-	    <div class="container-fluid">
-	      <h2>Knowledge is power.</h1>
+	    
+	    <div class="container-fluid" >
+	 	<!--   	<div class="search-field" data-spy="affix" data-offset-top="200">
+	      
+	      
+	      		<h2>This field is gonna be replaced with search</h1>
+	      		</div>-->
+	      		
 	    </div>
-	    -->
+	    
 	    <div class="container">
 	        {% for article in article_list %}
 				<div class="span9">
@@ -101,7 +141,29 @@
 	
 	</div><!--/.fluid-container-->
 	<footer>
-		<p>&copy; ZZZ 2013</p>
+		<p>&copy; Zoie Cheng 2013</p>
 	</footer>
 	<!--</div>-->
+	
+	<div id="aboutModal" class="modal hide fade">
+    	<div class="modal-header">
+    		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    		<h3>About this site</h3>
+    	</div>
+    	<div class="modal-body">
+    		<p>This RSS reader was initially created to showcase and practice what I have learned about Django.
+    		   Although it was obviously for personal usage, I still tried to make it as complete as a business project.
+    		</p>
+    		<p class="text-right">
+    			<a href="mailto:greenmoonshisu@gmail.com">
+    				<em>Zoie </em>
+    			</a>
+    			
+    		</p>
+    		<p class="text-right">Apr. 2013</p>   
+    	</div>
+    	<div class="modal-footer">
+    		<a href="" class="btn btn-primary">Close</a>
+    	</div>
+    </div>
 {% endblock %}

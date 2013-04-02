@@ -11,22 +11,42 @@
 		<link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap.css">
 		<style type="text/css">
       		body {
-        		padding-top: 60px;
+        		padding-top: 70px;
         		padding-bottom: 40px;
       		}
       		.affix {
             	position: fixed;
-            	top: 60px;
-            	
-          	}
-          	
+            	top: 70px;
+            }
           	.sidebar-nav {
           		width: 168px;
           	}
+          	.sidebar-list > a {
+				height: 30px;
+			}
+			.sidebar-list > a > h4{
+				font-weight: normal;
+				margin: 5px 0;
+			}
+			.sidebar-list-detail > a{
+				height: 30px;
+			}
+			.sidebar-list-detail > a > h6{
+				font-weight: normal;
+				margin: 5px 0;
+			}
+			.navbar-inner .brand {
+				padding: 30px 0px 10px;
+				color:   rgb(255, 185, 15);
+			}
+			.nav-list > hr {
+				margin: 15px 0px 0px;
+			}
           	.modal-header {
           		background: #36a;
           		color: #fff;
           	}
+          	
     	</style>
     	<script>
             $(document).ready (function (){

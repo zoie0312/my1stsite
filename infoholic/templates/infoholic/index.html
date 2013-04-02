@@ -3,14 +3,12 @@
 {% block page_title %}The Infoholic | {% endblock %}
 
 {% block page_content %}
-<div class="row-fluid">
-	<h1>Welcome infoholic</h1>
-	<a href="{% url 'infoholic:login' %}" class="btn">Log in</a>
-	<a href="#signupModal" data-toggle="modal" class="btn">Sign up</a>
-	<a href="{% url 'infoholic:user_default' %}" class="btn">Try it</a>
-</div>
 
 <style type="text/css">
+	.index-head > h1{
+		line-height: 45px;
+		font-size: 43px;
+	}
 	.center-container {
 		text-align: center;
 	}
@@ -20,7 +18,55 @@
 	#signupModal {
 		width: 420px;
 	}
+	#background {
+		position: fixed;
+		top: -50%;
+		left: -50%;
+		width: 200%;
+		height: 200%;
+		z-index: -999999;
+	}
+	#background img {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		margin: auto;
+		min-width: 50%;
+		min-height: 50%;
+	}	
 </style>
+<div id="background" >
+	<img src="{{ STATIC_URL }}img/P1030889-2.jpg">
+</div>
+<div class="row-fluid">
+	<div class="span4 offset4">
+		<div class="index-head">
+			<h1>The Infoholic</h1>
+		</div>
+	</div>
+	<div class="span4"></div>
+</div>
+<div class="row-fluid">
+	<div class="span6 offset3">
+		<em>
+		<h3><p>Do you love reading? enjoy learnig new stuff</p></h3>
+		<h3><p>Or, even addict to getting more information?</p></h3>
+		<h3><p>If so, then this is probably someting you should try!</P></h3>
+		</em>
+	</div>
+</div>
+<div class="row-fluid">
+	<div class="span4 offset4">
+		<a href="{% url 'infoholic:login' %}" class="btn">Log in</a>
+		<a href="#signupModal" data-toggle="modal" class="btn">Sign up</a>
+		<a href="{% url 'infoholic:user_default' %}" class="btn">Try it</a>
+	</div>
+</div>
+
+
+
 	<div id="signupModal" class="modal hide fade">
     	<div class="modal-header">
     		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -32,7 +78,7 @@
     			<div class="center-container">
 					<div class="prompt">
 					     "
-						You are almost an infoholic!
+						Only one step away from satisfying your info craving!
 					
 							"							
 					</div>

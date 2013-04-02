@@ -4,16 +4,7 @@
 
 {% block page_content %}
 <style type="text/css">
-	.sidebar-list {
-		height: 30px;
-	}
-	.navbar-inner .brand {
-		padding: 30px 0px 10px;
-		color:   rgb(255, 185, 15);
-	}
-	.sidebar-list > a {
-		height: 30px;
-	}
+	
 </style>
 	<div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
@@ -60,14 +51,15 @@
 	        		{% if category == cat_selected %}
 	        			<li class="sidebar-list active"><a href="{% url 'infoholic:category_detail' category.name %}"><h4>{{ category.name }}</h4></a></li>
 	        			{% for feed in feed_list %}
-	        		 		<div ><a href="{% url 'infoholic:feed_detail' category.slug_name feed.slug %}"><h6>{{ feed.title }}</h6></a></div>
+	        		 		<div class="sidebar-list-detail"><a href="{% url 'infoholic:feed_detail' category.slug_name feed.slug %}"><h5>{{ feed.title }}</h5></a></div>
 	        		 	{% endfor %}
 	        		{% else %}
 	        			<li class="sidebar-list"><a href="{% url 'infoholic:category_detail' category.name %}"><h4>{{ category.name }}</h4></a></li>
-	        		 	
-	        		 {% endif %}
-	        	{% endfor %}      
-	        	<li class="nav-header"><a href="{% url 'infoholic:edit_source' %}"><h6>More..</h6></a></li>                         
+	        		{% endif %}
+	        	{% endfor %}
+	        	<hr>      
+	        	<li class="sidebar-list"><a href="{% url 'infoholic:edit_source' %}"><h4><em>More...</em></h4></a></li>                         
+	        
 	        </ul>
 	      </div><!--/.well -->
 	    </div><!--/sidebarContainer-->
@@ -75,13 +67,15 @@
 	  
 	  
     
-	  <div class="span10">
+	  <div class="span9">
+	    <!--
 	    <div class="container-fluid">
 	      <h2>Knowledge is power.</h1>
 	    </div>
+	    -->
 	    <div class="container">
 	        {% for article in article_list %}
-				<div class="span10">
+				<div class="span9">
 					<div>
 	              		<h3><li><a href="{{ article.link }}">{{ article.title }}</a></li></h3>
 	              	</div>
@@ -93,15 +87,15 @@
 	              	</div>
 	            </div><!--/span-->
 			{% empty %}
-				<h2>Sorry, no article yet. Check back soon!</h2>
+				<div class="span9"><h2>Sorry, no article yet. Check back soon!</h2></div>
 			{% endfor %}
 	    </div><!--/container-->
-	    <hr>
+	    
 	  </div><!--/span--> 
 	
 	</div><!--/.fluid-container-->
 	<footer>
-		<p>&copy; Company 2013</p>
+		<p>&copy; ZZZ 2013</p>
 	</footer>
 	<!--</div>-->
 {% endblock %}
