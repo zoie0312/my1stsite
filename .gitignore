@@ -1,3 +1,5 @@
 *.pyc
 *.bak
 my1stsite/settings/local.py
+static/img/Thumbs.db
+htmlcov/*.*

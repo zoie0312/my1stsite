@@ -6,10 +6,11 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from .models import Article, Category, Feed
 from django.shortcuts import render
-import feedparser
+from feedparser import parse
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth.hashers import check_password
+from django.template.defaultfilters import slugify
 
 
 class HomepageView(TemplateView):
@@ -28,16 +29,22 @@ def register(request):
             for feed in user_guest.feeds.filter(category=category):
                 feed.owners.add(new_user)
             
+
+        #manually log new_user in
         username = request.POST.get('username', '')
         password = request.POST['password']
         user = authenticate(username=new_user.username,
                             password=password)
         if user is not None:
+            '''
             if user.is_active:
                 login(request, user)
                 return HttpResponseRedirect(reverse('infoholic:user_default'))
             else:
                 return HttpResponseRedirect(reverse('home'))
+            '''
+            login(request, user)
+            return HttpResponseRedirect(reverse('infoholic:user_default'))
         else:
             return HttpResponseRedirect(reverse('infoholic:signup'))
       
@@ -45,48 +52,56 @@ def register(request):
         return HttpResponseRedirect(reverse('infoholic:home'))
 
 def user_profile(request):
-    template_name = "infoholic/user_profile.html"
-    if request.method == 'POST':
-        if request.POST['inputEmail'] is not None:
-            request.user.email = request.POST['inputEmail']
-            request.user.save()
-        if check_password(request.POST['currentPassword'], request.user.password):
-            if (request.POST['newPassword'] is not None) and \
-               (request.POST['confirmPassword'] is not None) and \
-               (request.POST['newPassword'] == request.POST['confirmPassword']):
-                request.user.set_password(request.POST['newPassword'])
+    if request.user.is_authenticated():
+        template_name = "infoholic/user_profile.html"
+        if request.method == 'POST':
+            if request.POST['newEmail'] is not None:
+                request.user.email = request.POST['newEmail']
                 request.user.save()
-                                
-        return HttpResponseRedirect(reverse('infoholic:user_default'))
+            if check_password(request.POST['currentPassword'], request.user.password):
+                if (request.POST['newPassword'] is not None) and \
+                   (request.POST['confirmPassword'] is not None) and \
+                   (request.POST['newPassword'] == request.POST['confirmPassword']):
+                    request.user.set_password(request.POST['newPassword'])
+                    request.user.save()
+                                    
+            return HttpResponseRedirect(reverse('infoholic:user_default'))
+        else:
+            return render(request, template_name)
     else:
-        return render(request, template_name)
+        return HttpResponseRedirect(reverse('infoholic:home'))
             
 def edit_source(request):
     template_name = "infoholic/edit_source.html"
     if request.method == 'POST':
         if request.POST['new_cat_name'] != '':
             new_cat_added = False
+            new_category = Category(name=request.POST['new_cat_name'])
             for category in Category.objects.all():
-                if category.name == request.POST['new_cat_name']:
+                if category.name == new_category.name:
                     if category not in request.user.categories.all():
                         category.owners.add(request.user)
-                        new_cat_added = True
+                    new_cat_added = True
+                        
             if not new_cat_added:
-                new_category = Category(name=request.POST['new_cat_name'])
                 new_category.save()
                 new_category.owners.add(request.user)
                 
         if request.POST['new_feed_title'] != '':
+            assigned_category = request.user.categories.get(
+                    name=request.POST['new_feed_cat'])
+            new_feed = Feed(title=request.POST['new_feed_title'],
+                                category=assigned_category,
+                                link=request.POST['new_feed_link'])
             new_feed_added = False
             for feed in Feed.objects.all():
-                if feed.link == request.POST['new_feed_link']:
+                #actually use feed.link to differentiate feeds
+                if feed.link == new_feed.link:
                     if feed not in request.user.feeds.all():
                         feed.owners.add(request.user)
-                        new_feed_added = True
+                    new_feed_added = True
+                        
             if not new_feed_added:
-                new_feed = Feed(title=request.POST['new_feed_title'],
-                                category=request.POST['new_feed_cat'],
-                                link=request.POST['new_feed_link'])
                 new_feed.save()
                 new_feed.owners.add(request.user)
             
@@ -106,7 +121,7 @@ def user_default(request):
     feed_list = user.feeds.filter(category=default_cat).order_by(
                 'created_at')
     default_feed = feed_list[0]
-    d = feedparser.parse(default_feed.link)
+    d = parse(default_feed.link)
     article_titles = []
     for article in user.articles.all():
         article_titles.append(article.title)
@@ -148,7 +163,7 @@ def category_detail(request, slug):
         user = User.objects.get(username='guest')
     username = user.username
     category_list = user.categories.all().order_by('created_at')
-    cat_selected = user.categories.get(name=slug)
+    cat_selected = user.categories.get(slug_name=slug)
     feed_list = user.feeds.filter(category=cat_selected).order_by(
                 'created_at')
 
@@ -158,7 +173,7 @@ def category_detail(request, slug):
 
     #temp_post_list = []
     for feed in feed_list:
-        d = feedparser.parse(feed.link)
+        d = parse(feed.link)
         parse_len = len(d.entries)
         num_save_article = 0
                     
@@ -198,7 +213,7 @@ def feed_detail(request, slug1, slug2):
     feed_list = user.feeds.filter(category=cat_selected).order_by(
                 'created_at')
     feed_selected = user.feeds.get(slug=slug2)
-    d = feedparser.parse(feed_selected.link)
+    d = parse(feed_selected.link)
     article_titles = []
     #user = User
     for article in user.articles.all():
@@ -218,7 +233,9 @@ def feed_detail(request, slug1, slug2):
                 if num_save_article < 100:
                     new_article.save()
                 num_save_article += 1
-    
+                
+    #temporary measurement to control the amount of articles of
+    #a certain feed
     num_feed_articles = user.articles.filter(category=cat_selected,
                                     source=feed_selected).count()
     if num_feed_articles > parse_len:

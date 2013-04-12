@@ -13,7 +13,7 @@
 	</div>
 	<div class="span9">
 		<div class="center-container">
-	    	<form class="form-horizontal" action="{% url 'infoholic:edit_source' %}" method="POST">
+	    	<form name="form" class="form-horizontal" action="{% url 'infoholic:edit_source' %}" method="POST">
 	    		{% csrf_token %}
 	    			<div class="content-header">
 	    				<legend class>Category</legend>
@@ -24,7 +24,7 @@
 	    			<div class="control-group">
 						<label class="control-label" for="categoryTitle">Title</label>
 						<div class="controls">
-							<input type="text" id="categoryTitle" name="new_cat_name" placeholder">
+							<input type="text" id="categoryTitle" name="new_cat_name" placeholder>
 							<p>ex: News</p>
 						</div>
 					</div>
@@ -46,7 +46,7 @@
 						<div class="controls">
 							<select id="feedCategory" name="new_feed_cat" >
 								{% for category in user.categories.all %}
-									<option value="{{ category }}">{{ category.name }}</option>
+									<option value="{{ category.name }}">{{ category.name }}</option>
 								{% endfor %}
 							</select>
 							<p>choose what category you'd like this feed belongs to</p>

@@ -84,9 +84,9 @@
 	        	{% for category in category_list %}
 	        		{% if category == cat_selected %}
 	        			{% if feed_selected == None %}
-	        				<li class="sidebar-list active"><a href="{% url 'infoholic:category_detail' category.name %}"><h4>{{ category.name }}</h4></a></li>
+	        				<li class="sidebar-list active"><a href="{% url 'infoholic:category_detail' category.slug_name %}"><h4>{{ category.name }}</h4></a></li>
 	        			{% else %}
-	        				<li class="sidebar-list"><a href="{% url 'infoholic:category_detail' category.name %}"><h4>{{ category.name }}</h4></a></li>
+	        				<li class="sidebar-list"><a href="{% url 'infoholic:category_detail' category.slug_name %}"><h4>{{ category.name }}</h4></a></li>
 	        			{% endif %}
 	        			{% for feed in feed_list %}
 	        				{% if feed == feed_selected %}
@@ -96,7 +96,7 @@
 	        		 		{% endif %}
 	        		 	{% endfor %}
 	        		{% else %}
-	        			<li class="sidebar-list"><a href="{% url 'infoholic:category_detail' category.name %}"><h4>{{ category.name }}</h4></a></li>
+	        			<li class="sidebar-list"><a href="{% url 'infoholic:category_detail' category.slug_name %}"><h4>{{ category.name }}</h4></a></li>
 	        		{% endif %}
 	        	{% endfor %}
 	        	<hr>
@@ -133,7 +133,7 @@
 	              	</div>
 	            </div><!--/span-->
 			{% empty %}
-				<div class="span9"><h2>Sorry, no articles yet. Check back soon!</h2></div>
+				<div class="span9"><h2>Sorry, no articles yet. Coming soon!</h2></div>
 			{% endfor %}
 	    </div><!--/container-->
 	    
@@ -151,7 +151,7 @@
     		<h3>About this site</h3>
     	</div>
     	<div class="modal-body">
-    		<p>This RSS reader was initially created to showcase and practice what I have learned about Django.
+    		<p>This RSS reader was initially created to practice and showcase what I have learned about web development.
     		   Although it was obviously for personal usage, I still tried to make it as complete as a business project.
     		</p>
     		<p class="text-right">
