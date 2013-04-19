@@ -4,9 +4,21 @@ from django.contrib.auth.models import User
 # Create your models here.
 
 
-class Category(models.Model):
+class TimeStampedModel(models.Model):
+    '''
+    An abstract base class model that provides self-updating
+    "created_at" and "updated_at" fields.
+    '''
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     updated_at = models.DateTimeField(auto_now=True, editable=False)
+
+    class Meta:
+        abstract = True
+
+
+class Category(TimeStampedModel):
+    #created_at = models.DateTimeField(auto_now_add=True, editable=False)
+    #updated_at = models.DateTimeField(auto_now=True, editable=False)
     name = models.CharField(max_length=255)
     slug_name = models.SlugField(max_length=255, blank=True, default='')
     owners = models.ManyToManyField(User, related_name='categories')
@@ -24,8 +36,9 @@ class Category(models.Model):
             self.slug_name = slugify(self.name)
         super(Category, self).save(*args, **kwargs)
 
-class Feed(models.Model):
-    created_at = models.DateTimeField(auto_now_add=True, editable=False)
+
+class Feed(TimeStampedModel):
+    #created_at = models.DateTimeField(auto_now_add=True, editable=False)
     #updated_at = models.DateTimeField(auto_now=True, editable=False)
     title = models.CharField(max_length=255)
     link = models.CharField(max_length=255) #ex, http://www.theverge.com/rss/index.xml
@@ -43,6 +56,7 @@ class Feed(models.Model):
         if not self.slug:
             self.slug = slugify(self.title)
         super(Feed, self).save(*args, **kwargs)
+
 
 class Article(models.Model):
     fetched_at = models.DateTimeField(auto_now_add=True, editable=False)

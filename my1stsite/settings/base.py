@@ -1,14 +1,16 @@
 # Django settings for my1stsite project.
-import os
+from os.path import join, abspath, dirname
 import dj_database_url
+import djcelery
+
 # here() gives us file paths from the root of the system to the directory
 # holding the current file.
-here = lambda * x: os.path.join(os.path.abspath(os.path.dirname(__file__)), *x)
+here = lambda * x: join(abspath(dirname(__file__)), *x)
 
 PROJECT_ROOT = here("..")
 # root() gives us file paths from the root of the system to whatever
 # folder(s) we pass it starting at the parent directory of the current file.
-root = lambda * x: os.path.join(os.path.abspath(PROJECT_ROOT), *x)
+root = lambda * x: join(abspath(PROJECT_ROOT), *x)
 
 
 DEBUG = False
@@ -133,7 +135,7 @@ DJANGO_APPS = (
 )
 THIRD_PARTY_APPS = (
     'south',
-    
+    'djcelery',
 )
 
 LOCAL_APPS = (
@@ -171,4 +173,5 @@ LOGGING = {
     }
 }
 
-
+djcelery.setup_loader()
+BROKER_POOL_LIMIT = 1

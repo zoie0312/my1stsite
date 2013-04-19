@@ -1,7 +1,9 @@
 from django.test import TestCase
-from ..models import *
 from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
+
+from ..models import *
+
 
 class InfoholicTests(TestCase):
 
@@ -16,8 +18,7 @@ class InfoholicTests(TestCase):
             category=self.category
             )
         self.feed.owners.add(self.user)
-            
-    
+   
     def create_article(self):
         return Article.objects.create(
             title='test article',
@@ -27,7 +28,6 @@ class InfoholicTests(TestCase):
             category=self.category,
             source=self.feed
             )
-            
 
     def test_article_creation(self):
         article = self.create_article()
@@ -77,7 +77,6 @@ class InfoholicTests(TestCase):
             title='test',
             slug='fizza',
             category=self.category,
-            
             )
         self.assertNotEqual(feed.slug, slugify(feed.title))
         self.assertEqual(feed.slug, 'fizza')

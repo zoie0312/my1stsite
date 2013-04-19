@@ -4,3 +4,11 @@ argparse==1.2.1
 dj-database-url==0.2.1
 psycopg2==2.4.6
 wsgiref==0.1.2
+amqp==1.0.11
+anyjson==0.3.3
+billiard==2.7.3.28
+celery==3.0.19
+django-celery==3.0.17
+heroku==0.1.2
+kombu==2.5.10
+requests==1.2.0

@@ -1,10 +1,11 @@
 from django.test import TestCase
-from ..models import *
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test.client import Client
 from django.utils.http import urlencode
 from django.contrib.auth.hashers import check_password
+
+from ..models import *
 
 
 class InfoholicViewsTests(TestCase):
@@ -125,6 +126,7 @@ class InfoholicViewsTests(TestCase):
     
 
 class SessionTestCase(TestCase):
+
     def setUp(self):
         # http://code.djangoproject.com/ticket/10899
         #settings.SESSION_ENGINE = 'django.contrib.sessions.backends.file'
@@ -154,6 +156,7 @@ class SessionTestCase(TestCase):
             source=self.feed,
             category=self.category
             )
+
     
 class InfoholicUserViewsTests(SessionTestCase):
 
@@ -302,8 +305,7 @@ class InfoholicUserViewsTests(SessionTestCase):
         self.assertRedirects(resp, reverse('infoholic:user_default'),
                          status_code=302, target_status_code=200)
         self.assertIn(self.user, new_feed.owners.all())
-        
-        
+     
     def test_user_profile_view(self):
         #session = self.client.session
         #session['user'] = self.user

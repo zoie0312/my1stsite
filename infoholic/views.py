@@ -4,17 +4,22 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
-from .models import Article, Category, Feed
 from django.shortcuts import render
-from feedparser import parse
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth.hashers import check_password
 from django.template.defaultfilters import slugify
+from feedparser import parse
+#from celery import task
+
+from .models import Article, Category, Feed
+from .tasks import fetch_article
+
 
 
 class HomepageView(TemplateView):
     template_name = 'infoholic/index.html'
+
 
 def register(request):
     if request.method == 'POST':
@@ -28,7 +33,6 @@ def register(request):
             category.owners.add(new_user)
             for feed in user_guest.feeds.filter(category=category):
                 feed.owners.add(new_user)
-            
 
         #manually log new_user in
         username = request.POST.get('username', '')
@@ -51,6 +55,7 @@ def register(request):
     else:
         return HttpResponseRedirect(reverse('infoholic:home'))
 
+
 def user_profile(request):
     if request.user.is_authenticated():
         template_name = "infoholic/user_profile.html"
@@ -70,6 +75,7 @@ def user_profile(request):
             return render(request, template_name)
     else:
         return HttpResponseRedirect(reverse('infoholic:home'))
+
             
 def edit_source(request):
     template_name = "infoholic/edit_source.html"
@@ -109,6 +115,7 @@ def edit_source(request):
     else:
         return render(request, template_name)
 
+
 def user_default(request):
     template_name = "infoholic/read_article.html"
     if request.user.is_authenticated():
@@ -121,6 +128,9 @@ def user_default(request):
     feed_list = user.feeds.filter(category=default_cat).order_by(
                 'created_at')
     default_feed = feed_list[0]
+
+    fetch_article.delay(user, default_cat, default_feed)
+    '''
     d = parse(default_feed.link)
     article_titles = []
     for article in user.articles.all():
@@ -140,10 +150,10 @@ def user_default(request):
             if num_save_article < 10:
                 new_article.save()
             num_save_article += 1
+    '''
     
     article_list = user.articles.filter(category=default_cat,
                                     source=default_feed)[:10]
-        
 
     context = {
         'username'     : username,
@@ -154,6 +164,7 @@ def user_default(request):
         'article_list' : article_list
     }
     return render(request, template_name, context)
+
 
 def category_detail(request, slug):
     template_name = "infoholic/read_article.html"
@@ -173,6 +184,8 @@ def category_detail(request, slug):
 
     #temp_post_list = []
     for feed in feed_list:
+        fetch_article.delay(user, cat_selected, feed)
+        '''
         d = parse(feed.link)
         parse_len = len(d.entries)
         num_save_article = 0
@@ -189,8 +202,8 @@ def category_detail(request, slug):
                 if num_save_article < 100:
                     new_article.save()
                 num_save_article += 1
-            
-        
+        '''
+       
     article_list = user.articles.filter(category=cat_selected)
     context = {
         'username'      : username,
@@ -200,6 +213,7 @@ def category_detail(request, slug):
         'article_list'  : article_list
     }
     return render(request, template_name, context)
+
 
 def feed_detail(request, slug1, slug2):
     template_name = "infoholic/read_article.html"
@@ -213,6 +227,9 @@ def feed_detail(request, slug1, slug2):
     feed_list = user.feeds.filter(category=cat_selected).order_by(
                 'created_at')
     feed_selected = user.feeds.get(slug=slug2)
+    
+    fetch_article.delay(user, cat_selected, feed_selected)
+    '''
     d = parse(feed_selected.link)
     article_titles = []
     #user = User
@@ -233,7 +250,8 @@ def feed_detail(request, slug1, slug2):
                 if num_save_article < 100:
                     new_article.save()
                 num_save_article += 1
-                
+    '''
+    '''            
     #temporary measurement to control the amount of articles of
     #a certain feed
     num_feed_articles = user.articles.filter(category=cat_selected,
@@ -242,6 +260,7 @@ def feed_detail(request, slug1, slug2):
         for j in range(num_feed_articles-1, parse_len+9, -1):
             user.articles.filter(category=cat_selected,
                                  source=feed_selected)[j].delete()
+    '''
         
     article_list = user.articles.filter(category=cat_selected,
                                     source=feed_selected)
