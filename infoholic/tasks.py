@@ -1,12 +1,12 @@
 from celery import task
 from feedparser import parse
+#from multiprocessing import Process
+import time
+#from heroku import heroku
 
 from .models import Article
+from my1stsite import settings
 
-@task()
-def chk_task():
-    print "This is to check task"
-    return
 
 @task()
 def fetch_article(user, category, feed):
@@ -30,5 +30,42 @@ def fetch_article(user, category, feed):
                     new_article.save()
                 num_save_article += 1
 
+    if settings.DEBUG == False:
+        import heroku
+        cloud = heroku.from_key(settings.HEROKU_APIKEY)
+        app = cloud.apps['theinfoholic']
+        time.sleep(30)
+        if app.processes['worker'] != None:
+            cloud._http_resource(method='POST', resource=(
+                'apps', 'theinfoholic', 'ps', 'scale'),
+                                 data={'type': 'worker', 'qty': 0})
+    #time.sleep(30)
     return
+'''
+def start_time():
+    start = time.time()
+    print "update timer = %r" % start
+    while (time.time() - start) < 30:
+        pass
+
+    print "Time's Up!"
+    print "Now, it is %r" % time.time()
+
+
     
+def start_count():
+    p = Process(target=start_time)
+    p.start()
+'''
+
+def check_worker():
+    if settings.DEBUG == False:
+        import heroku
+        cloud = heroku.from_key(settings.HEROKU_APIKEY)
+        app = cloud.apps['theinfoholic']
+        if app.processes['worker'] == None:
+            cloud._http_resource(method='POST', resource=(
+                'apps', 'theinfoholic', 'ps', 'scale'),
+                                 data={'type': 'worker', 'qty': 1})
+            
+    return    

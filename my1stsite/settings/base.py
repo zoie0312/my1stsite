@@ -173,6 +173,8 @@ LOGGING = {
     }
 }
 
+HEROKU_APIKEY = "3643d7d98f32d8717c8e77628b2563207ec32be0"
+
 djcelery.setup_loader()
 BROKER_POOL_LIMIT = 1
 BROKER_URL = 'amqp://omyxsrll:HcOZdrgeNkj4bYiDARWqYEWNstfKI3ty@lemur.cloudamqp.com/omyxsrll'
