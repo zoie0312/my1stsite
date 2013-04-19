@@ -175,3 +175,4 @@ LOGGING = {
 
 djcelery.setup_loader()
 BROKER_POOL_LIMIT = 1
+BROKER_URL = 'amqp://omyxsrll:HcOZdrgeNkj4bYiDARWqYEWNstfKI3ty@lemur.cloudamqp.com/omyxsrll'
