@@ -63,7 +63,9 @@ def check_worker():
         import heroku
         cloud = heroku.from_key(settings.HEROKU_APIKEY)
         app = cloud.apps['theinfoholic']
-        if app.processes['worker'] == None:
+        try:
+            app.processes['worker']
+        except KeyError, e:
             cloud._http_resource(method='POST', resource=(
                 'apps', 'theinfoholic', 'ps', 'scale'),
                                  data={'type': 'worker', 'qty': 1})
