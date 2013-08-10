@@ -47,7 +47,7 @@ def fetch_article(user, category, feed):
         #update_worker_start_time()
                
         time.sleep(30)
-        if 'worker' in app.processes:
+        if app.processes['worker']:
             cloud._http_resource(method='POST', resource=(
                 'apps', 'theinfoholic', 'ps', 'scale'),
                                  data={'type': 'worker', 'qty': 0})
