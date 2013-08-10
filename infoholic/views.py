@@ -13,7 +13,7 @@ from feedparser import parse
 #from celery import task
 
 from .models import Article, Category, Feed
-from .tasks import fetch_article, start_stop_worker
+from .tasks import fetch_article, start_worker
 
 
 
@@ -118,7 +118,7 @@ def edit_source(request):
 
 def user_default(request):
     #start_count()
-    start_stop_worker()
+    start_worker()
     template_name = "infoholic/read_article.html"
     if request.user.is_authenticated():
         user = request.user        

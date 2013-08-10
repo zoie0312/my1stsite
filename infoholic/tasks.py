@@ -7,9 +7,22 @@ import time
 from .models import Article
 from my1stsite import settings
 
-worker_start_time = 0
+if settings.DEBUG == False:
+    import heroku
+
+#worker_start_time = 0
 @task()
 def fetch_article(user, category, feed):
+    if settings.DEBUG == False:
+        cloud = heroku.from_key(settings.HEROKU_APIKEY)
+        app = cloud.apps['theinfoholic']
+        try:
+            app.processes['worker']
+        except KeyError, e:
+            cloud._http_resource(method='POST', resource=(
+                'apps', 'theinfoholic', 'ps', 'scale'),
+                                data={'type': 'worker', 'qty': 1})
+
     d = parse(feed.link)
     article_titles = []
     for article in user.articles.all():
@@ -31,17 +44,14 @@ def fetch_article(user, category, feed):
                 num_save_article += 1
 
     if settings.DEBUG == False:
-        update_worker_start_time()
-        """
-        import heroku
-        cloud = heroku.from_key(settings.HEROKU_APIKEY)
-        app = cloud.apps['theinfoholic']
+        #update_worker_start_time()
+               
         time.sleep(30)
         if 'worker' in app.processes:
             cloud._http_resource(method='POST', resource=(
                 'apps', 'theinfoholic', 'ps', 'scale'),
                                  data={'type': 'worker', 'qty': 0})
-        """
+        
     return
 '''
 def start_time():
@@ -59,28 +69,40 @@ def start_count():
     p = Process(target=start_time)
     p.start()
 '''
-
+"""
 def update_worker_start_time():
     worker_start_time = time.time()
-
-def start_stop_worker():
+"""
+def start_worker():
     if settings.DEBUG == False:
         import heroku
         cloud = heroku.from_key(settings.HEROKU_APIKEY)
         app = cloud.apps['theinfoholic']
-        worker_start_time = time.time()        
+        #worker_start_time = time.time()        
         try:
             app.processes['worker']
         except KeyError, e:
             cloud._http_resource(method='POST', resource=(
                 'apps', 'theinfoholic', 'ps', 'scale'),
                                  data={'type': 'worker', 'qty': 1})
-        while (time.time() - worker_start_time) < 60:
-            pass
+        #while (time.time() - worker_start_time) < 60:
+        #    pass
 
-        if 'worker' in app.processes:
+        #if 'worker' in app.processes:
+        #    cloud._http_resource(method='POST', resource=(
+        #        'apps', 'theinfoholic', 'ps', 'scale'),
+        #                         data={'type': 'worker', 'qty': 0})
+            
+    return
+"""
+def check_worker():
+    import heroku
+    cloud = heroku.from_key(settings.HEROKU_APIKEY)
+    app = cloud.apps['theinfoholic']
+    try:
+            app.processes['worker']
+    except KeyError, e:
             cloud._http_resource(method='POST', resource=(
                 'apps', 'theinfoholic', 'ps', 'scale'),
-                                 data={'type': 'worker', 'qty': 0})
-            
-    return    
+                                 data={'type': 'worker', 'qty': 1})     
+"""
