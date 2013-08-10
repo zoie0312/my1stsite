@@ -3,8 +3,10 @@ from .models import Article, Category, Feed
 
 class ArticleAdmin(admin.ModelAdmin):
     date_hierarchy = "fetched_at"
-    fields = ("readed", "title", "slug", "content", "category", "source", "link", "reader")
-    list_display = ["title", "fetched_at", "category", "source", "reader", "readed",]
+    fields = ("readed", "title", "slug", "content", "category", "source", 
+        "link", "reader")
+    list_display = ["title", "fetched_at", "category", "source", "reader", 
+    "readed",]
     list_display_links = ["title"]
     list_editable = ["readed", "reader"]
     list_filter = ["readed", "category", "source", "reader"]
