@@ -33,6 +33,16 @@ def register(request):
             category.owners.add(new_user)
             for feed in user_guest.feeds.filter(category=category):
                 feed.owners.add(new_user)
+                for article in user_guest.articles.filter(category=category, source=feed).order_by('-fetched_at')[:4]:
+                    default_article = Article()
+                    default_article.title = article.title
+                    default_article.source = article.source
+                    default_article.category = article.category
+                    default_article.content = article.content
+                    default_article.link = article.link
+                    default_article.reader = new_user
+                    default_article.save()
+
 
         #manually log new_user in
         username = request.POST.get('username', '')
