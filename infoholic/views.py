@@ -1,4 +1,3 @@
-# Create your views here.
 from django.views.generic import TemplateView
 from django import forms
 from django.contrib.auth.models import User
@@ -9,12 +8,11 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth.hashers import check_password
 from django.template.defaultfilters import slugify
-from feedparser import parse
-#from celery import task
 
 from .models import Article, Category, Feed
 from .tasks import fetch_article, start_worker
 
+from feedparser import parse
 
 
 class HomepageView(TemplateView):
@@ -22,12 +20,17 @@ class HomepageView(TemplateView):
 
 
 def register(request):
+    """
+    to register a new user
+    """
     if request.method == 'POST':
         new_user = User()
         new_user.username = request.POST['username']
         new_user.email = request.POST['email']
         new_user.set_password(request.POST['password'])
         new_user.save()
+
+        #assign guest's categories, feeds and some articles to this mew user
         user_guest = User.objects.get(username='guest')
         for category in user_guest.categories.all():
             category.owners.add(new_user)
@@ -50,13 +53,6 @@ def register(request):
         user = authenticate(username=new_user.username,
                             password=password)
         if user is not None:
-            '''
-            if user.is_active:
-                login(request, user)
-                return HttpResponseRedirect(reverse('infoholic:user_default'))
-            else:
-                return HttpResponseRedirect(reverse('home'))
-            '''
             login(request, user)
             return HttpResponseRedirect(reverse('infoholic:user_default'))
         else:
@@ -67,6 +63,9 @@ def register(request):
 
 
 def user_profile(request):
+    """
+    to edit user's user's profile
+    """
     if request.user.is_authenticated():
         template_name = "infoholic/user_profile.html"
         if request.method == 'POST':
@@ -88,10 +87,13 @@ def user_profile(request):
 
             
 def edit_source(request):
+    """
+    to add new category and feed for current user
+    """
     template_name = "infoholic/edit_source.html"
     if request.method == 'POST':
         if request.POST['new_cat_name'] != '':
-            new_cat_added = False
+            new_cat_added = False #new category already in db?
             new_category = Category(name=request.POST['new_cat_name'])
             for category in Category.objects.all():
                 if category.name == new_category.name:
@@ -127,8 +129,11 @@ def edit_source(request):
 
 
 def user_default(request):
-    #start_count()
-    start_worker()
+    """
+    the landing page for a logged in user
+    """
+    start_worker() #wake up worker for future article parsing
+
     template_name = "infoholic/read_article.html"
     if request.user.is_authenticated():
         user = request.user        
@@ -136,34 +141,13 @@ def user_default(request):
         user = User.objects.get(username='guest')
     username = user.username
     category_list = user.categories.all().order_by('created_at')
-    default_cat = category_list[0]
+    default_cat = category_list[0] 
     feed_list = user.feeds.filter(category=default_cat).order_by(
                 'created_at')
-    default_feed = feed_list[0]
+    default_feed = feed_list[0] 
 
-    fetch_article.delay(user, default_cat, default_feed)
-    '''
-    d = parse(default_feed.link)
-    article_titles = []
-    for article in user.articles.all():
-        article_titles.append(article.title)
+    fetch_article.delay(user, default_cat, default_feed) #issue a task to parse new articles
         
-    parse_len = len(d.entries)
-    num_save_article = 0
-    for i in range(parse_len-1, -1, -1):
-        if d.entries[i].title not in article_titles:
-            new_article = Article()
-            new_article.title = d.entries[i].title
-            new_article.content = d.entries[i].description
-            new_article.link = d.entries[i].link
-            new_article.source = default_feed
-            new_article.category = default_cat
-            new_article.reader = user
-            if num_save_article < 10:
-                new_article.save()
-            num_save_article += 1
-    '''
-    
     article_list = user.articles.filter(category=default_cat,
                                     source=default_feed)[:10]
 
@@ -179,6 +163,9 @@ def user_default(request):
 
 
 def category_detail(request, slug):
+    """
+    to display articles of a certain category
+    """
     template_name = "infoholic/read_article.html"
     if request.user.is_authenticated():
         user = request.user        
@@ -194,28 +181,9 @@ def category_detail(request, slug):
     for article in user.articles.all():
         article_titles.append(article.title)
 
-    #temp_post_list = []
     for feed in feed_list:
-        fetch_article.delay(user, cat_selected, feed)
-        '''
-        d = parse(feed.link)
-        parse_len = len(d.entries)
-        num_save_article = 0
-                    
-        for i in range(parse_len-1, -1, -1):
-            if d.entries[i].title not in article_titles:
-                new_article = Article()
-                new_article.title = d.entries[i].title
-                new_article.content = d.entries[i].description
-                new_article.link = d.entries[i].link
-                new_article.source = feed
-                new_article.category = cat_selected
-                new_article.reader = user
-                if num_save_article < 100:
-                    new_article.save()
-                num_save_article += 1
-        '''
-       
+        fetch_article.delay(user, cat_selected, feed) #to parse articles
+               
     article_list = user.articles.filter(category=cat_selected)
     context = {
         'username'      : username,
@@ -228,6 +196,9 @@ def category_detail(request, slug):
 
 
 def feed_detail(request, slug1, slug2):
+    """
+    to display articles of a certain feed
+    """
     template_name = "infoholic/read_article.html"
     if request.user.is_authenticated():
         user = request.user        
@@ -241,28 +212,7 @@ def feed_detail(request, slug1, slug2):
     feed_selected = user.feeds.get(slug=slug2)
     
     fetch_article.delay(user, cat_selected, feed_selected)
-    '''
-    d = parse(feed_selected.link)
-    article_titles = []
-    #user = User
-    for article in user.articles.all():
-        article_titles.append(article.title)
-        
-    parse_len = len(d.entries)
-    num_save_article = 0    
-    for i in range(parse_len-1, -1, -1):
-            if d.entries[i].title not in article_titles:
-                new_article = Article()
-                new_article.title = d.entries[i].title
-                new_article.content = d.entries[i].description
-                new_article.link = d.entries[i].link
-                new_article.source = feed_selected
-                new_article.category = cat_selected
-                new_article.reader = user
-                if num_save_article < 100:
-                    new_article.save()
-                num_save_article += 1
-    '''
+    
     '''            
     #temporary measurement to control the amount of articles of
     #a certain feed
@@ -276,14 +226,7 @@ def feed_detail(request, slug1, slug2):
         
     article_list = user.articles.filter(category=cat_selected,
                                     source=feed_selected)
-    """
-    for i in range(10):
-        post_list.append(Post())
-        post_list[i].title = d.entries[i].title
-        post_list[i].content = d.entries[i].description
-        post_list[i].link = d.entries[i].link
-        #post_list[i].created_at = d.entries[i].published_parsed
-    """
+    
     context = {
         'username'     : username,
         'category_list': category_list,

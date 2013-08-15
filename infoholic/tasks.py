@@ -1,18 +1,23 @@
-from celery import task
-from feedparser import parse
-#from multiprocessing import Process
 import time
-#from heroku import heroku
 
 from .models import Article
 from my1stsite import settings
 
+from celery import task
+from feedparser import parse
+
 if settings.DEBUG == False:
     import heroku
 
-#worker_start_time = 0
+"""
+worker_start_time = 0
+"""
+
 @task()
 def fetch_article(user, category, feed):
+    """
+    to parse articles of feeds
+    """
     if settings.DEBUG == False:
         cloud = heroku.from_key(settings.HEROKU_APIKEY)
         app = cloud.apps['theinfoholic']
@@ -53,27 +58,16 @@ def fetch_article(user, category, feed):
                                  data={'type': 'worker', 'qty': 0})
         
     return
-'''
-def start_time():
-    start = time.time()
-    print "update timer = %r" % start
-    while (time.time() - start) < 30:
-        pass
 
-    print "Time's Up!"
-    print "Now, it is %r" % time.time()
-
-
-    
-def start_count():
-    p = Process(target=start_time)
-    p.start()
-'''
 """
 def update_worker_start_time():
     worker_start_time = time.time()
 """
+
 def start_worker():
+    """
+    wake up worker
+    """
     if settings.DEBUG == False:
         import heroku
         cloud = heroku.from_key(settings.HEROKU_APIKEY)
@@ -85,15 +79,10 @@ def start_worker():
             cloud._http_resource(method='POST', resource=(
                 'apps', 'theinfoholic', 'ps', 'scale'),
                                  data={'type': 'worker', 'qty': 1})
-        #while (time.time() - worker_start_time) < 60:
-        #    pass
-
-        #if 'worker' in app.processes:
-        #    cloud._http_resource(method='POST', resource=(
-        #        'apps', 'theinfoholic', 'ps', 'scale'),
-        #                         data={'type': 'worker', 'qty': 0})
-            
+                    
     return
+
+
 """
 def check_worker():
     import heroku

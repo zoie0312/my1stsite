@@ -11,9 +11,7 @@ urlpatterns = patterns('',
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
-    #url(r'^$', views.HomepageView.as_view(), name='home'),
-    #url(r'^$', views.PostListView.as_view(), name='list'),
-    
+        
     url(r'^signup/$', 'infoholic.views.register', name='signup'),
     url(r'^login/$', 'django.contrib.auth.views.login',
         {'template_name': 'infoholic/login.html'}, name='login'),

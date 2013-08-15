@@ -1,7 +1,6 @@
 from django.db import models
 from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User
-# Create your models here.
 
 
 class TimeStampedModel(models.Model):
@@ -17,14 +16,13 @@ class TimeStampedModel(models.Model):
 
 
 class Category(TimeStampedModel):
-    #created_at = models.DateTimeField(auto_now_add=True, editable=False)
-    #updated_at = models.DateTimeField(auto_now=True, editable=False)
+    """
+    category of articles, such as News, Business etc
+    """
     name = models.CharField(max_length=255)
     slug_name = models.SlugField(max_length=255, blank=True, default='')
     owners = models.ManyToManyField(User, related_name='categories')
-    #feeds = models.ManyToManyField(Feed)
-    #objects = PostManager()
-
+    
     class Meta:
         ordering = ["created_at", "name"]
 
@@ -38,8 +36,9 @@ class Category(TimeStampedModel):
 
 
 class Feed(TimeStampedModel):
-    #created_at = models.DateTimeField(auto_now_add=True, editable=False)
-    #updated_at = models.DateTimeField(auto_now=True, editable=False)
+    """
+    an RSS feed
+    """
     title = models.CharField(max_length=255)
     link = models.CharField(max_length=255) #ex, http://www.theverge.com/rss/index.xml
     slug = models.SlugField(max_length=255, blank=True, default='')
@@ -59,6 +58,9 @@ class Feed(TimeStampedModel):
 
 
 class Article(models.Model):
+    """
+    articles parsed from an RSS feed
+    """
     fetched_at = models.DateTimeField(auto_now_add=True, editable=False)
     title = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255, blank=True, default='')
@@ -68,16 +70,9 @@ class Article(models.Model):
     reader = models.ForeignKey(User, related_name="articles")
     source = models.ForeignKey(Feed, related_name="articles") #feed 
     category = models.ForeignKey(Category, related_name="articles") #category 
-    #objects = PostManager()
-
+    
     class Meta:
         ordering = ["-fetched_at", "title"]
-
-    #def set_title(self, title):
-    #    self.title = title
-
-    #def set_content(self, content):
-    #    self.
 
     def __unicode__(self):
         return self.title
@@ -87,6 +82,4 @@ class Article(models.Model):
             self.slug = slugify(self.link)
         super(Article, self).save(*args, **kwargs)
 
-    #@models.permalink
-    #def get_absolute_url(self):
-    #    return ("infoholic:detail", (), {'slug': self.slug})
+    
