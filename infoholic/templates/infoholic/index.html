@@ -1,6 +1,6 @@
 {% extends "_layouts/base.html" %}
 {% load url from future %}
-{% block page_title %}The Infoholic | {% endblock %}
+{% block page_title %}Infoholic | {% endblock %}
 
 {% block page_content %}
 
@@ -35,36 +35,47 @@
 		margin: auto;
 		min-width: 50%;
 		min-height: 50%;
-	}	
+	}
+	#landing-body {
+		margin-top: -40px;
+	}
 </style>
 <div id="background" >
 	<img src="{{ STATIC_URL }}img/P1030889-2.jpg">
 </div>
-<div class="row-fluid">
-	<div class="span4 offset4">
-		<div class="index-head">
-			<h1>The Infoholic</h1>
+<div id="landing-body">
+	<div class="row-fluid">
+		<div class="span1 offset11">
+			<a href="{% url 'infoholic:login' %}" class="btn">Log in</a>
 		</div>
 	</div>
-	<div class="span4"></div>
-</div>
-<div class="row-fluid">
-	<div class="span6 offset3">
-		<em>
-		<h3><p>Do you love reading? enjoy learnig new stuff</p></h3>
-		<h3><p>Or, even addict to getting more information?</p></h3>
-		<h3><p>If so, then this is probably someting you should try!</P></h3>
-		</em>
+	<div class="row-fluid">
+		<div class="span12">
+		</div>
 	</div>
-</div>
-<div class="row-fluid">
-	<div class="span4 offset4">
-		<a href="{% url 'infoholic:login' %}" class="btn">Log in</a>
-		<a href="#signupModal" data-toggle="modal" class="btn">Sign up</a>
-		<a href="{% url 'infoholic:user_default' %}" class="btn">Try it</a>
+	<div class="row-fluid">
+		<div class="span4 offset5">
+			<div class="index-head">
+				<h1>Infoholic</h1>
+			</div>
+		</div>
+		<div class="span2"></div>
 	</div>
-</div>
+	<div class="row-fluid">
+		<div class="span6 offset5">
+			<em>
+			<h4><p>~ A simple RSS reader ~</p></h4>
 
+			</em>
+		</div>
+	</div>
+	<div class="row-fluid">
+		<div class="span4 offset5">
+			<a href="#signupModal" data-toggle="modal" class="btn btn-large btn-primary">Sign up</a>
+			<a href="{% url 'infoholic:user_default' %}" class="btn btn-large">Try it</a>
+		</div>
+	</div>
+</div>
 
 
 	<div id="signupModal" class="modal hide fade">
@@ -79,8 +90,8 @@
 					<div class="prompt">
 					     "
 						Only one step away from satisfying your info craving!
-					
-							"							
+
+							"
 					</div>
 					<p class="errorMessage" style="display:none;"></p>
 				</div>
@@ -108,11 +119,11 @@
 						<input class="" type="password" name="password" placeholder="Password">
 					</div>
 				</div>
-				
+
     		</div>
     		<div class="modal-footer">
     			<button type="submit" class="btn btn-primary signupButton"><i class="icon-ok icon-white"></i> Sign Up!</button>
     		</div>
     	</form>
 	</div><!-- /#myModal -->
-{% endblock %} 
+{% endblock %}
