@@ -36,12 +36,12 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>-->
-          <!--<a class="brand" href="#"><img src="{{ STATIC_URL }}img/w3r.png" width="111" height="30" alt="w3resource logo" /></a> 
+          <!--<a class="brand" href="#"><img src="{{ STATIC_URL }}img/w3r.png" width="111" height="30" alt="w3resource logo" /></a>
           	-->
           <a class="brand">The Infoholic</a>-->
           <div class="nav-collapse">
             <ul class="nav">
-              
+
               <li><a href="{% url 'infoholic:user_default' %}">Home</a></li>
               <li><a href="#aboutModal" data-toggle="modal">About</a></li>
               <li><a href="mailto:greenmoonshisu@gmail.com">Contact</a></li>
@@ -71,16 +71,16 @@
         </div>
       </div>
     </div><!-- navbar -->
-    
-    
+
+
     <!--<div class="container"> -->
     <div class="container-fluid">
-	  
+
       <div class="span2">
 	    <div class="SidebarContainer" >
 	      <div class="well sidebar-nav" data-spy="affix" data-offset-top="200">
 	        <ul class="nav nav-list">
-	        
+
 	        	{% for category in category_list %}
 	        		{% if category == cat_selected %}
 	        			{% if feed_selected == None %}
@@ -91,7 +91,7 @@
 	        			{% for feed in feed_list %}
 	        				{% if feed == feed_selected %}
 	        					<li class="sidebar-list-detail active"><a href="{% url 'infoholic:feed_detail' category.slug_name feed.slug %}"><h6>{{ feed.title }}</h6></a></li>
-	        		 		{% else %}	
+	        		 		{% else %}
 	        		 			<li class="sidebar-list-detail"><a href="{% url 'infoholic:feed_detail' category.slug_name feed.slug %}"><h6>{{ feed.title }}</h6></a></li>
 	        		 		{% endif %}
 	        		 	{% endfor %}
@@ -100,25 +100,25 @@
 	        		{% endif %}
 	        	{% endfor %}
 	        	<hr>
-	        	{% if username != 'guest' %}      
-	        		<li class="sidebar-list"><a href="{% url 'infoholic:edit_source' %}"><h4><em>More...</em></h4></a></li>    
-	        	{% endif %}                        
+	        	{% if username != 'guest' %}
+	        		<li class="sidebar-list"><a href="{% url 'infoholic:edit_source' %}"><h4><em>More...</em></h4></a></li>
+	        	{% endif %}
 	        </ul>
 	      </div><!--/.well -->
 	    </div><!--/sidebarContainer-->
 	  </div><!--/span-->
-	
+
 	  <div class="span9">
-	    
+
 	    <div class="container-fluid" >
 	 	<!--   	<div class="search-field" data-spy="affix" data-offset-top="200">
-	      
-	      
+
+
 	      		<h2>This field is gonna be replaced with search</h1>
 	      		</div>-->
-	      		
+
 	    </div>
-	    
+
 	    <div class="container">
 	        {% for article in article_list %}
 				<div class="span9">
@@ -136,15 +136,15 @@
 				<div class="span9"><h2>Sorry, no articles yet. Coming soon!</h2></div>
 			{% endfor %}
 	    </div><!--/container-->
-	    
-	  </div><!--/span--> 
-	
+
+	  </div><!--/span-->
+
 	</div><!--/.fluid-container-->
 	<footer>
 		<p>&copy; Zoie Cheng 2013</p>
 	</footer>
 	<!--</div>-->
-	
+
 	<div id="aboutModal" class="modal hide fade">
     	<div class="modal-header">
     		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -158,9 +158,9 @@
     			<a href="mailto:greenmoonshisu@gmail.com">
     				<em>Zoie </em>
     			</a>
-    			
+
     		</p>
-    		<p class="text-right">Apr. 2013</p>   
+    		<p class="text-right">Apr. 2013</p>
     	</div>
     	<div class="modal-footer">
     		<a href="" class="btn btn-primary">Close</a>

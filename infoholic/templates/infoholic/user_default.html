@@ -1,6 +1,6 @@
 {% extends "_layouts/base.html" %}
 
-{% block page_title %}The Infoholic | {% endblock %}
+{% block page_title %}Infoholic | {% endblock %}
 
 {% block page_content %}
 
@@ -12,12 +12,12 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>-->
-          <!--<a class="brand" href="#"><img src="{{ STATIC_URL }}img/w3r.png" width="111" height="30" alt="w3resource logo" /></a> 
+          <!--<a class="brand" href="#"><img src="{{ STATIC_URL }}img/w3r.png" width="111" height="30" alt="w3resource logo" /></a>
           	-->
           <a class="brand">The Infoholic</a>-->
           <div class="nav-collapse">
             <ul class="nav">
-              
+
               <li class="active"><a href="{% url 'infoholic:user_default' %}">Home</a></li>
               <li><a href="#about">About</a></li>
               <li><a href="#contact">Contact</a></li>
@@ -35,16 +35,16 @@
         </div>
       </div>
     </div><!-- navbar -->
-    
-    
+
+
     <!--<div class="container"> -->
     <div class="container-fluid">
-	  
+
       <div class="span2">
 	    <div class="SidebarContainer" >
 	      <div class="well sidebar-nav" data-spy="affix" data-offset-top="200">
 	        <ul class="nav nav-list">
-	        
+
 	        	{% for category in category_list %}
 	        		{% if category == cat_selected %}
 	        			<li class="sidebar-list active"><a href="{% url 'infoholic:category_detail' category.name %}"><h4>{{ category.name }}</h4></a></li>
@@ -55,14 +55,14 @@
 	        			<li class="sidebar-list"><a href="{% url 'infoholic:category_detail' category.name %}"><h4>{{ category.name }}</h4></a></li>
 	        		{% endif %}
 	        	{% endfor %}
-	        	<hr>      
-	        	<li class="sidebar-list"><a href="{% url 'infoholic:edit_source' %}"><h4><em>More...</em></h4></a></li>      
-	        	                         
+	        	<hr>
+	        	<li class="sidebar-list"><a href="{% url 'infoholic:edit_source' %}"><h4><em>More...</em></h4></a></li>
+
 	        </ul>
 	      </div><!--/.well -->
 	    </div><!--/sidebarContainer-->
 	  </div><!--/span-->
-	  
+
 	  <div class="span9">
 	    <!--
 	    <div class="container-fluid">
@@ -86,9 +86,9 @@
 				<div class="span9"><h2>Sorry, no article yet. Check back soon!</h2></div>
 			{% endfor %}
 	    </div><!--/container-->
-	    
-	  </div><!--/span--> 
-	
+
+	  </div><!--/span-->
+
 	</div><!--/.fluid-container-->
 	<footer>
 		<p>&copy; ZZZ 2013</p>
